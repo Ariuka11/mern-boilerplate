@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
 
 const server = express()
 
@@ -8,8 +9,16 @@ const port = process.env.PORT || 5000
 
 require('dotenv').config()
 
+if(process.env.NODE_ENV === "production"){
+    server.use(express.static('client/build'));
+    server.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "build", "index.html"))
+    })
+}
+
 server.use(express.json())
 server.use(cookieParser())
+server.use(cors())
 
 server.get('/', (req, res, next) => {
     res.json({
